@@ -1,0 +1,35 @@
+#include <Wire.h>
+#include <MPU6050.h>
+
+MPU6050 mpu;
+
+int ax_offset = 0; // X ekseni offset değeri
+int ay_offset = 0; // Y ekseni offset değeri
+int az_offset = 0; // Z ekseni offset değeri
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  mpu.initialize();
+  // Offset değerlerini ölçerek ayarlayın
+  ax_offset =... ; // X ekseni offset değerini ölçün veya tahmin edin
+  ay_offset =... ; // Y ekseni offset değerini ölçün veya tahmin edin
+  az_offset =... ; // Z ekseni offset değerini ölçün veya tahmin edin
+}
+
+void loop() {
+  int16_t ax, ay, az;
+  mpu.getAcceleration(&ax, &ay, &az);
+
+  ax -= ax_offset; // X ekseni offset değerini düzelt
+  ay -= ay_offset; // Y ekseni offset değerini düzelt
+  az -= az_offset; // Z ekseni offset değerini düzelt
+
+  Serial.print(ax);
+  Serial.print(",");
+  Serial.print(ay);
+  Serial.print(",");
+  Serial.println(az);
+
+  delay(100);
+}

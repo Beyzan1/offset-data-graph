@@ -1,0 +1,49 @@
+import serial
+import matplotlib.pyplot as plt
+
+# Seri port ayarları
+ser = serial.Serial('COM4', 9600)  # COM4 yerine Arduino'nun bağlı olduğu seri portu belirtin
+ser.flushInput()
+
+# Veri saklamak için boş listeler oluşturun
+data_x = []
+data_y = []
+data_z = []
+
+# Grafik ayarları
+plt.ion()  # Etkileşimli modu açar
+fig, ax = plt.subplots()
+
+# Veri alma ve grafik çizme döngüsü
+while True:
+    try:
+        # Seri porttan bir satır oku
+        line = ser.readline().decode('utf-8').rstrip()
+        values = line.split(',')
+
+        if len(values) == 3:
+            # Veriyi ayır ve float'a dönüştür
+            x, y, z = map(float, values)
+
+            # Veriyi listelere ekle
+            data_x.append(x)
+            data_y.append(y)
+            data_z.append(z)
+
+            # Grafikleri çiz
+            ax.clear()
+            ax.plot(data_x, label='X')
+            ax.plot(data_y, label='Y')
+            ax.plot(data_z, label='Z')
+            ax.legend()
+
+            # Grafikleri güncelle
+            plt.draw()
+            plt.pause(0.001)
+
+    except KeyboardInterrupt:
+        # Programı Ctrl+C ile durdur
+        break
+
+# Seri portu kapat
+ser.close()
